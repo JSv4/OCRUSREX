@@ -35,10 +35,8 @@ Obviously you will need to have already installed Tesseract. Please refer to the
 
 ### Usage
 
-`
-   from OCRUSREX import ocrusrex
-   ocrusrex.OCRPDF(...options)
-`
+    from OCRUSREX import ocrusrex
+    ocrusrex.OCRPDF(...options)
 
 _RETURNS_: fasly if the task fails or truthy if it succeeds.
 
