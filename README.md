@@ -37,6 +37,8 @@ Obviously you will need to have already installed Tesseract. Please refer to the
 
 `
 from OCRUSREX import ocrusrex
+`
+`
 ocrusrex.OCRPDF(...options)
 `
 
