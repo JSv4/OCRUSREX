@@ -33,6 +33,15 @@ licenses:
 
 Obviously you will need to have already installed Tesseract. Please refer to the Tesseract documentation (or pytesseract docs).
 
+###### TESTS
+
+The tests also rely on:
+
+1) python-levenshtein
+2) tika-python.
+
+Neither are required for the core library to work.
+
 ### Usage
 
     from OCRUSREX import ocrusrex
@@ -65,15 +74,6 @@ object.
             you would pass directly to tesseract were you calling it directly. The defaults here are
             optimized for accuracy but require you download an additional tesseract data file (the "best" one).
             This comes at the expense of speed.
-
-###### TESTS
-
-The tests also rely on:
-
-1) python-levenshtein
-2) tika-python.
-
-Neither are required for the core library to work.
 
 ### FUTURE
 
