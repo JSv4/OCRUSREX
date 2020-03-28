@@ -7,7 +7,7 @@ from tika import parser
 import Levenshtein
 
 ### TEST SETTINGS
-remove_test_output = True #If you want the test OCRed docs to be preserved for some reason, change this to False
+remove_test_output = False #If you want the test OCRed docs to be preserved, change this to False
 
 ### HELPER METHODS
 
@@ -24,16 +24,16 @@ def extractPdfText(pdfPath, echo_ocred_content = False):
 ### OCRUSREX TESTS
 
 dirname = os.path.dirname(__file__)
-source_file = os.path.join(dirname, "test.pdf")
+source_file = os.path.join(dirname, "test2.pdf")
 page_count = PyPDF2.PdfFileReader(source_file).getNumPages()
 
 #get the benchmark text to compare outputs against
 benchmark_text = open(os.path.join(dirname, "full_text.txt")).read()
 
-print("\n---Testing string source, byte obj return---")
+print("\n1) ---Testing string source, byte obj return---")
 start = time.time()
 file_obj = OCRPDF(source=source_file)
-target_file = os.path.join(dirname, "rawrjr.pdf")
+target_file = os.path.join(dirname, "Test1.pdf")
 with open(target_file, "wb+") as f:
     f.write(file_obj)
 end = time.time()
@@ -42,9 +42,9 @@ print("\t Levenshtein Distance (~Accuracy): {0}".format(Levenshtein.ratio(extrac
 if remove_test_output:
 	os.remove(target_file)
 
-print("\n---Testing string source, string target---")
+print("\n2) ---Testing string source, string target---")
 start = time.time()
-target_file=os.path.join(dirname, 'lilrawr.pdf')
+target_file=os.path.join(dirname, 'Test.pdf')
 OCRPDF(source=source_file, targetPath=target_file)
 end = time.time()
 print("\t Started: {0} | Ended: {1}. ELAPSED: {2} ({3} per page)".format(start, end, end-start, (end-start)/page_count))
@@ -52,11 +52,10 @@ print("\t Levenshtein Distance (~Accuracy): {0}".format(Levenshtein.ratio(extrac
 if remove_test_output:
 	os.remove(target_file)
 
-print("\n---Testing byte obj source, byte obj return---")
+print("\n3) ---Testing byte obj source, byte obj return---")
 start = time.time()
-target_file=os.path.join(dirname, "tinyrawr.pdf")
+target_file=os.path.join(dirname, "Test3.pdf")
 with open(source_file,'rb') as s:
-	print("start")
 	file_obj = OCRPDF(source=s.read())
 	with open(target_file, "wb+") as f:
 		f.write(file_obj)
@@ -66,10 +65,10 @@ print("\t Levenshtein Distance (~Accuracy): {0}".format(Levenshtein.ratio(extrac
 if remove_test_output:
 	os.remove(target_file)
 
-print("\n---MULTITHREAD: Testing string source, byte obj return---")
+print("\n4) ---MULTITHREAD: Testing string source, byte obj return---")
 start = time.time()
 file_obj =  Multithreaded_OCRPDF(source=source_file)
-target_file = os.path.join(dirname, "rawrjr.pdf")
+target_file = os.path.join(dirname, "Test4.pdf")
 with open(target_file, "wb+") as f:
     f.write(file_obj)
 end = time.time()
@@ -78,9 +77,9 @@ print("\t Levenshtein Distance (~Accuracy): {0}".format(Levenshtein.ratio(extrac
 if remove_test_output:
 	os.remove(target_file)
 
-print("\n---MULTITHREAD: Testing string source, string target---")
+print("\n5) ---MULTITHREAD: Testing string source, string target---")
 start = time.time()
-target_file=os.path.join(dirname, 'lilrawr.pdf')
+target_file=os.path.join(dirname, 'Test5.pdf')
 Multithreaded_OCRPDF(source=source_file, targetPath=target_file)
 end = time.time()
 print("\t Started: {0} | Ended: {1}. ELAPSED: {2} ({3} per page)".format(start, end, end-start, (end-start)/page_count))
@@ -88,9 +87,9 @@ print("\t Levenshtein Distance (~Accuracy): {0}".format(Levenshtein.ratio(extrac
 if remove_test_output:
 	os.remove(target_file)
 
-print("\n---Testing byte obj source, byte obj return---")
+print("\n6) ---MULTITHREAD: Testing byte obj source, byte obj return---")
 start = time.time()
-target_file=os.path.join(dirname, "tinyrawr.pdf")
+target_file=os.path.join(dirname, "Test6.pdf")
 with open(source_file,'rb') as s:
 	file_obj = Multithreaded_OCRPDF(source=s.read())
 	with open(target_file, "wb+") as f:
@@ -104,9 +103,9 @@ if remove_test_output:
 ### Switch to test of OCRing of arbitrary page #. Load benchmark text for target page=2
 benchmark_text = open(os.path.join(dirname, "page2_text.txt")).read()
 
-print("\n---Testing byte obj source, byte obj return, and page=2---")
+print("\n7) ---Testing byte obj source, byte obj return, and page=2---")
 start = time.time()
-target_file=os.path.join(dirname, "tinyrawr.pdf")
+target_file=os.path.join(dirname, "Test7.pdf")
 with open(source_file,'rb') as s:
 	file_obj = OCRPDF(source=s.read(), page=2)
 	with open(target_file, "wb+") as f:
@@ -117,10 +116,10 @@ print("\t Levenshtein Distance (~Accuracy): {0}".format(Levenshtein.ratio(extrac
 if remove_test_output:
 	os.remove(target_file)
 
-print("\n---Testing string source, byte obj return, and page=2---")
+print("\n8) ---Testing string source, byte obj return, and page=2---")
 start = time.time()
 file_obj = OCRPDF(source=source_file, page=2)
-target_file = os.path.join(dirname, "rawrjr.pdf")
+target_file = os.path.join(dirname, "Test8.pdf")
 with open(target_file, "wb+") as f:
     f.write(file_obj)
 end = time.time()
@@ -129,9 +128,9 @@ print("\t Levenshtein Distance (~Accuracy): {0}".format(Levenshtein.ratio(extrac
 if remove_test_output:
 	os.remove(target_file)
 
-print("\n---Testing string source, string target, and page=2---")
+print("\n9) ---Testing string source, string target, and page=2---")
 start = time.time()
-target_file=os.path.join(dirname, 'lilrawr.pdf')
+target_file=os.path.join(dirname, 'Test9.pdf')
 OCRPDF(source=source_file, targetPath=target_file, page=2)
 end = time.time()
 print("\t Started: {0} | Ended: {1}. ELAPSED: {2} ({3} per page)".format(start, end, end-start, (end-start)/page_count))

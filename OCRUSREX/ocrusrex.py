@@ -7,13 +7,17 @@ import io, pytesseract, PyPDF2, os, time
 from multiprocess import Pool
 from pdf2image import convert_from_path, convert_from_bytes
 
+#based on what I've read in several different projects, limiting Tesseract to single threading with this environment variable
+#leads to optimal performance. From OCRUSREX, we'll call multiple, single-threaded tesseract instances. I've verified that
+#using 4 threads in OCRUSREX is much much faster than lifting the Tesseract thread cap.
 os.environ['OMP_THREAD_LIMIT'] = '1'
 
 def ocrPilImage(image=None, nice=5, config=""):
 	ocred_page = pytesseract.image_to_pdf_or_hocr(image, extension='pdf', nice=nice, config=config)
 	return PyPDF2.PdfFileReader(io.BytesIO(ocred_page)).getPage(0)
 
-def OCRPDF(source="", targetPath=None, page=None, nice=5, verbose=False, tesseract_config='--oem 1 -l eng -c preserve_interword_spaces=1 textonly_pdf=1'):
+#Single-threaded invocation of tesseract. No page range support (yet).
+def OCRPDF(source="", targetPath=None, page=None, nice=5, verbose=False, tesseract_config='--oem 1 -l best/eng -c preserve_interword_spaces=1 textonly_pdf=1'):
 
 	try:
 
@@ -32,17 +36,17 @@ def OCRPDF(source="", targetPath=None, page=None, nice=5, verbose=False, tessera
 
 				if page is None:
 
-					if verbose: print("\tOCRing entire document with total page count of: {0}".format(page_count + 1))
+					if verbose: print("\tOCRing entire document with total page count of: {0}".format(page_count))
 
-					for i in range(page_count):
-						if verbose: print("\tOCRing page {0} of {1}".format(i + 1, page_count + 1))
-						page_image_array = convert_from_path(source, dpi=300, first_page=i, last_page=i+1)
+					for i in range(0, page_count):
+						if verbose: print("\tOCRing page {0} of {1}".format(i+1, page_count))
+						page_image_array = convert_from_path(source, dpi=300, first_page=i+1, last_page=i+1)
 						pdf_page = ocrPilImage(image=page_image_array[0], nice=nice, config=tesseract_config)
 						output.addPage(pdf_page)
 
 				else:
 
-					if verbose: print("\tOCRing only page {0} of {1}".format(page, page_count + 1))
+					if verbose: print("\tOCRing only page {0} of {1}".format(page, page_count))
 
 					page_image_array = convert_from_path(source, dpi=300, first_page=page, last_page=page)
 					output.addPage(ocrPilImage(image=page_image_array[0], nice=nice, config=tesseract_config))
@@ -57,17 +61,17 @@ def OCRPDF(source="", targetPath=None, page=None, nice=5, verbose=False, tessera
 
 			if page is None:
 
-				if verbose: print("\tOCRing entire document with total page count of: {0}".format(page_count+1))
+				if verbose: print("\tOCRing entire document with total page count of: {0}".format(page_count))
 
-				for i in range(page_count):
-					if verbose: print("\tOCRing page {0} of {1}".format(i+1, page_count + 1))
-					page_image_array = convert_from_bytes(source, dpi=100, first_page=i, last_page=i+1)
+				for i in range(0, page_count):
+					if verbose: print("\tOCRing page {0} of {1}".format(i+1, page_count))
+					page_image_array = convert_from_bytes(source, dpi=100, first_page=i+1, last_page=i+1)
 					output.addPage(ocrPilImage(image=page_image_array[0], nice=nice,
 					                           config=tesseract_config))
 
 			else:
-				if verbose: print("\tOCRing only page {0} of {1}".format(page, page_count + 1))
-				page_image_array = convert_from_bytes(source, dpi=100, first_page=page, last_page=page+1)
+				if verbose: print("\tOCRing only page {0} of {1}".format(page, page_count))
+				page_image_array = convert_from_bytes(source, dpi=100, first_page=page, last_page=page)
 				output.addPage(ocrPilImage(image=page_image_array[0], nice=nice,
 				                           config=tesseract_config))
 
@@ -91,8 +95,8 @@ def OCRPDF(source="", targetPath=None, page=None, nice=5, verbose=False, tessera
 		print("ERROR - Exception: {0}".format(e))
 		return None
 
-#Thanks to this guide for basic multithreading help: https://appliedmachinelearning.blog/2018/06/30/performing-ocr-by-running-parallel-instances-of-tesseract-4-0-python/
-def Multithreaded_OCRPDF(source="", targetPath=None, verbose=False):
+#Multithreaded execution of Tesseract. This version requires you ocr the entire pdf. No single page or page range support (yet).
+def Multithreaded_OCRPDF(source="", targetPath=None, processes=4, nice=5, verbose=False, tesseract_config='--oem 1 -l best/eng -c preserve_interword_spaces=1 textonly_pdf=1'):
 
 	if isinstance(source, str):
 		if verbose: print("You passed a string in as source. Trying this as source pdf file path.")
@@ -103,8 +107,10 @@ def Multithreaded_OCRPDF(source="", targetPath=None, verbose=False):
 
 	output = PyPDF2.PdfFileWriter()
 
-	p = Pool(4)
-	for ocred_page in p.map(lambda p: OCRPDF(source=source, verbose=verbose, page=p), range(page_count)):
+	# set up a multiprocess pool with the specified number of processes. Then call the single-threaded OCRPDF pethod
+	# on each page
+	p = Pool(processes)
+	for ocred_page in p.map(lambda p: OCRPDF(source=source, verbose=verbose, nice=nice, page=p+1, tesseract_config=tesseract_config), range(0, page_count)):
 		output.addPage(PyPDF2.PdfFileReader(io.BytesIO(ocred_page)).getPage(0))
 
 	if verbose: print ("Multithreaded Execution Complete!")

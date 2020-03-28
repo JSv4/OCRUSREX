@@ -15,8 +15,14 @@ headaches of other options out there.
 `pip install ocrusrex`
 
 In addition to installing the required python dependencies, you'll also need tesseract v4. You'll also want to install
-the appropriate training data. OCRUSREX is configured to use the best LSTM training models. You can change the default
-config to use fast or standard. See a description of the different Tesseract models in the Tesseract Docs:
+the appropriate training data. OCRUSREX is configured to use the "best" english LSTM training dataset. You can change this
+config to use fast or standard quality by overriding the tesseract_config argument. Using best improves accuracy by about 
+1 - 3 percentage points based on my benchmarking with a performance hit of ~ 20% more time per page. On a VirtualBox dev
+environment, that meant going from 2 seconds to 2.38 seconds per page when using byte obj input and out (string paths are
+much slower). I was willing to take that tradeoff as I hate having re-OCR things, but your mileage may vary.
+
+If you want to use tesseract's "best" training sets, you will likely need to install it for your 
+system. See a description of the different Tesseract models in the Tesseract Docs:
 
 * https://tesseract-ocr.github.io/tessdoc/Data-Files.html#updated-data-files-for-version-400-september-15-2017
 
@@ -24,12 +30,13 @@ config to use fast or standard. See a description of the different Tesseract mod
 
 ###### PRODUCTION
         
-OCRUSREX relies on three core libraries, all with MIT-like
+OCRUSREX relies on four core libraries, all with MIT-like
 licenses:
 
 1) pytesseract (MIT)
 2) PyPDF2 (MIT-like)
 3) Pillow (MIT-like)
+4) uqfoundation/multiprocess (MIT-like)
 
 Obviously you will need to have already installed Tesseract 4. Please refer to the Tesseract documentation (or pytesseract docs).
 
@@ -44,13 +51,31 @@ Neither are required for the core library to work.
 
 ### Usage
 
+###### Single Threaded
+
     from OCRUSREX import ocrusrex
-    ocrusrex.OCRPDF(...options)
+    ocrusrex.OCRPDF(source="", targetPath=None, page=None, nice=5, verbose=False, tesseract_config='--oem 1 -l eng -c preserve_interword_spaces=1 textonly_pdf=1')
 
 _RETURNS_: fasly if the task fails or truthy if it succeeds. If you specify a targetPath, returns True to indicate success
 or false to indicate failure. If you don't specify a targetPath, returns a bytes obj on success or None on failure. 
 
-_OPTIONS_:
+###### Multi Threaded
+
+OCRUSREX supports multithreaded execution via the uqfoundation/multiprocess library. Based on intial testing, this 
+execution mode enables you to divided OCR time per page vs singlethreaded by the number of processes you specify.
+For example, assuming you have the requisite # of cores, running processes=4 will divide ocr time per page by 4, effectively
+reducing OCR time by 75%. 
+
+    from OCRUSREX import ocrusrex
+    ocrusrex.Multithreaded_OCRPDF(source="", targetPath=None, processes=4, nice=5, verbose=False, tesseract_config='--oem 1 -l eng -c preserve_interword_spaces=1 textonly_pdf=1')
+
+_RETURNS_: fasly if the task fails or truthy if it succeeds. If you specify a targetPath, returns True to indicate success
+or false to indicate failure. If you don't specify a targetPath, returns a bytes obj on success or None on failure. 
+
+##### OPTIONS:
+
+* **processes** = 4 [**_Multithreaded Only_**]
+  * How many processes should be spawned at one time? Default is 4. Initial guidance is this should not be > your # of effective cores. 
 
 * **source** = ""
   * What is the target PDF to be OCRed? This can be a String containing a valid path to a pdf or a file-like
@@ -60,9 +85,9 @@ object.
   * Where should the OCRed PDF be saved? If you don't provide a value, the pdf will be returned as a byte
     object.
   
-* **page** = None
+* **page** = None [**_Singlethreaded Only_**]
   * If you provide an integer value, only a single page will be OCRed and returned. If you leave this as None
-            the entire PDF will be OCRed.
+            the entire PDF will be OCRed. **PDF page starting index # is 1 NOT 0**.
 
 * **nice** = 5
    * Sets the priority of the thread in Unix-like operating systems. 5 is slightly elevated.
@@ -78,9 +103,12 @@ object.
 
 ### FUTURE
 
-This could be multithreaded, potentially, or, as it can split the PDF up first and then OCR every page separately using the "Page" parementer, it could easily be scaled horizontally.
+I am pretty happy with the baseline performance at this point. The tool can OCR PDFs at a rate of 1 page every 2 seconds.
 
-The use-case I have in mind will be deployed on an asychronous, cloud-based framework. I plan to split my OCR jobs
-into multiple calls, each with a single page, and run each one in its own Celery task-runner, so multithreading
-directly inside of OCRUSREX isn't a required feature for me. I can see why it would be very helpful for local usage,
-however, so, if you know Python multithreading, please feel free to contribute!
+The most important next feature is reducing the output file size. Output PDFs are currently substantially larger than the
+source files. I need to do some experimentation to see if this can be done AFTER feeding the high-quality images to Tesseract.
+
+After that, it would be good to do some more error checking and other automated cleanup. Other libraries out there have
+substantial codebases dedicated just to these kinds of cleanup tasks. For now, I expect I'll add these types of features
+organically over time as I discover particularly hairy situations that need to be addressed or where I need some type of output
+for myself. Contributions are welcome!
