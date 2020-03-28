@@ -31,16 +31,24 @@ licenses:
 2) PyPDF2 (MIT-like)
 3) Pillow (MIT-like)
 
-Obviously you will need to have already installed Tesseract. Please refer to the Tesseract documentation (or pytesseract docs).
+Obviously you will need to have already installed Tesseract 4. Please refer to the Tesseract documentation (or pytesseract docs).
+
+###### TESTS
+
+The tests also rely on:
+
+1) python-levenshtein
+2) tika-python.
+
+Neither are required for the core library to work.
 
 ### Usage
 
-`
-from OCRUSREX import ocrusrex
-ocrusrex.OCRPDF(...options)
-`
+    from OCRUSREX import ocrusrex
+    ocrusrex.OCRPDF(...options)
 
-_RETURNS_: fasly if the task fails or truthy if it succeeds.
+_RETURNS_: fasly if the task fails or truthy if it succeeds. If you specify a targetPath, returns True to indicate success
+or false to indicate failure. If you don't specify a targetPath, returns a bytes obj on success or None on failure. 
 
 _OPTIONS_:
 
@@ -49,12 +57,12 @@ _OPTIONS_:
 object.
 
 * **targetPath** = None
-  * Where should the OCRed PDF be saved? If you don't provide a value, the odf will be returned as a byte
+  * Where should the OCRed PDF be saved? If you don't provide a value, the pdf will be returned as a byte
     object.
   
 * **page** = None
   * If you provide an integer value, only a single page will be OCRed and returned. If you leave this as None
-            The entire PDF will be OCRed.
+            the entire PDF will be OCRed.
 
 * **nice** = 5
    * Sets the priority of the thread in Unix-like operating systems. 5 is slightly elevated.
@@ -68,19 +76,9 @@ object.
             optimized for accuracy but require you download an additional tesseract data file (the "best" one).
             This comes at the expense of speed.
 
-###### TESTS
-
-The tests also rely on:
-
-1) python-levenshtein
-2) tika-python.
-
-Neither are required for the core library to work.
-
 ### FUTURE
 
-This could be multithreaded, potentially, or, as it splits the PDF up first and then OCRs every page separately,
-it could esaily be scaled horizontally, particularly if you use the OCRPDF_page_tobytesobj object call.
+This could be multithreaded, potentially, or, as it can split the PDF up first and then OCR every page separately using the "Page" parementer, it could easily be scaled horizontally.
 
 The use-case I have in mind will be deployed on an asychronous, cloud-based framework. I plan to split my OCR jobs
 into multiple calls, each with a single page, and run each one in its own Celery task-runner, so multithreading
