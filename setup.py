@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="OCRUSREX",
-    version="0.1.0",
+    version="0.2.0",
     author="John Scrudato",
     author_email="john@thelegal.engineer",
     description="OCRUSREX takes a PDF (either by path or as a file-like object) and makes it searchable using Tesseract 4. It has an enterprise-friendly license.",
@@ -19,5 +19,5 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
-    install_requires=['pillow', 'pypdf2', 'pdf2image','pytesseract','python-Levenshtein', 'tika']
+    install_requires=['pillow', 'pypdf2', 'pdf2image','pytesseract', 'multiprocess', 'python-Levenshtein', 'tika']
 )
