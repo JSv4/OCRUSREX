@@ -24,15 +24,15 @@ def extractPdfText(pdfPath, echo_ocred_content = False):
 ### OCRUSREX TESTS
 
 dirname = os.path.dirname(__file__)
-source_file = os.path.join(dirname, "test2.pdf")
+source_file = os.path.join(dirname, "test.pdf")
 page_count = PyPDF2.PdfFileReader(source_file).getNumPages()
 
 #get the benchmark text to compare outputs against
 benchmark_text = open(os.path.join(dirname, "full_text.txt")).read()
 
-print("\n1) ---Testing string source, byte obj return---")
+print("\n1) ---Testing string source, byte obj return + callback function ---")
 start = time.time()
-file_obj = OCRPDF(source=source_file)
+file_obj = OCRPDF(source=source_file, verbose=True, logCallback=print)
 target_file = os.path.join(dirname, "Test1.pdf")
 with open(target_file, "wb+") as f:
     f.write(file_obj)

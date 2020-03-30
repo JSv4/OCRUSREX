@@ -101,6 +101,10 @@ object.
             optimized for accuracy but require you download an additional tesseract data file (the "best" one).
             This comes at the expense of speed.
 
+* **tesseract_config** = 'print'
+   * Pass a method in for this argument to have verbose OCR message passed to this function as the first argument. 
+   If you leave it as None, standard print() function is used.
+
 ### FUTURE
 
 I am pretty happy with the baseline performance at this point. The tool can OCR PDFs at a rate of 1 page every 2 seconds.
