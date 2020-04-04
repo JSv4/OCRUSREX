@@ -5,79 +5,52 @@ OCRUSREX Comparative Benchmarking Data
     of RAM. The Windows 10 Pro host is a Dell XPS 9570 with an Intel i7-8750, SSD and 32GB of RAM. Processes was set
     to 4 for multithreaded execution. 
 
-Regular Training Model
-
----Testing string source, byte obj return---
-	 Started: 1585414433.573078 | Ended: 1585414489.7929068. ELAPSED: 56.219828844070435 (14.054957211017609 per page)
-	 Levenshtein Distance (~Accuracy): 95.02394814581122
-
----Testing string source, string target---
-	 Started: 1585414490.3969462 | Ended: 1585414546.8653913. ELAPSED: 56.46844506263733 (14.117111265659332 per page)
-	 Levenshtein Distance (~Accuracy): 95.02394814581122
-
----Testing byte obj source, byte obj return---
-	 Started: 1585414547.5197213 | Ended: 1585414580.6615682. ELAPSED: 33.141846895217896 (8.285461723804474 per page)
-	 Levenshtein Distance (~Accuracy): 94.68560071434744
-
----MULTITHREAD: Testing string source, byte obj return---
-	 Started: 1585414581.302309 | Ended: 1585414598.400768. ELAPSED: 17.098459005355835 (4.274614751338959 per page)
-	 Levenshtein Distance (~Accuracy): 95.02394814581122
-
----MULTITHREAD: Testing string source, string target---
-	 Started: 1585414599.0415444 | Ended: 1585414616.2352087. ELAPSED: 17.19366431236267 (4.298416078090668 per page)
-	 Levenshtein Distance (~Accuracy): 95.02394814581122
-
----MULTITHREAD: Testing byte obj source, byte obj return---
-	 Started: 1585414616.9850423 | Ended: 1585414626.523248. ELAPSED: 9.538205623626709 (2.3845514059066772 per page)
-	 Levenshtein Distance (~Accuracy): 94.68560071434744
-
----Testing byte obj source, byte obj return, and page=2---
-	 Started: 1585414627.205437 | Ended: 1585414634.9458406. ELAPSED: 7.740403652191162 (1.9351009130477905 per page)
-	 Levenshtein Distance (~Accuracy): 93.23899371069182
-
----Testing string source, byte obj return, and page=2---
-	 Started: 1585414635.0525723 | Ended: 1585414649.3859804. ELAPSED: 14.333408117294312 (3.583352029323578 per page)
-	 Levenshtein Distance (~Accuracy): 93.54658315624651
-
----Testing string source, string target, and page=2---
-	 Started: 1585414649.4635115 | Ended: 1585414664.4225478. ELAPSED: 14.959036350250244 (3.739759087562561 per page)
-	 Levenshtein Distance (~Accuracy): 93.54658315624651
-
 "Best" Training Model
 
----Testing string source, byte obj return---
-	 Started: 1585414792.2034485 | Ended: 1585414860.5532756. ELAPSED: 68.34982705116272 (17.08745676279068 per page)
-	 Levenshtein Distance (~Accuracy): 95.60533515731873
+1) ---Testing string source, byte obj return + callback function ---
+	 Started: 1586001519.0439436 | Ended: 1586001636.959186. ELAPSED: 117.91524243354797 (29.478810608386993 per page)
+	 Levenshtein Distance (~Accuracy): 98.85564914318908
 
----Testing string source, string target---
-	 Started: 1585414861.239288 | Ended: 1585414929.4730515. ELAPSED: 68.2337634563446 (17.05844086408615 per page)
-	 Levenshtein Distance (~Accuracy): 95.60533515731873
+2) ---Testing string source, string target---
+	 Started: 1586001637.9315348 | Ended: 1586001751.9287565. ELAPSED: 113.99722170829773 (28.499305427074432 per page)
+	 Levenshtein Distance (~Accuracy): 98.85564914318908
 
----Testing byte obj source, byte obj return---
-	 Started: 1585414930.2167397 | Ended: 1585414963.7998366. ELAPSED: 33.583096981048584 (8.395774245262146 per page)
-	 Levenshtein Distance (~Accuracy): 95.29728491236109
+3) ---Testing byte obj source, byte obj return---
+	 Started: 1586001752.9297574 | Ended: 1586001809.175725. ELAPSED: 56.245967626571655 (14.061491906642914 per page)
+	 Levenshtein Distance (~Accuracy): 98.52915426370163
 
----MULTITHREAD: Testing string source, byte obj return---
-	 Started: 1585414964.4554605 | Ended: 1585414985.8278913. ELAPSED: 21.3724308013916 (5.3431077003479 per page)
-	 Levenshtein Distance (~Accuracy): 95.60533515731873
+4) ---MULTITHREAD: Testing string source, byte obj return---
+	 Started: 1586001810.1039975 | Ended: 1586001841.5776706. ELAPSED: 31.473673105239868 (7.868418276309967 per page)
+	 Levenshtein Distance (~Accuracy): 98.85564914318908
 
----MULTITHREAD: Testing string source, string target---
-	 Started: 1585414986.4584188 | Ended: 1585415007.5653834. ELAPSED: 21.106964588165283 (5.276741147041321 per page)
-	 Levenshtein Distance (~Accuracy): 95.60533515731873
+5) ---MULTITHREAD: Testing string source, string target---
+	 Started: 1586001842.546596 | Ended: 1586001874.0789917. ELAPSED: 31.532395601272583 (7.883098900318146 per page)
+	 Levenshtein Distance (~Accuracy): 98.85564914318908
 
----MULTITHREAD: Testing byte obj source, byte obj return---
-	 Started: 1585415008.7552853 | Ended: 1585415019.281793. ELAPSED: 10.52650785446167 (2.6316269636154175 per page)
-	 Levenshtein Distance (~Accuracy): 95.29728491236109
+6) ---MULTITHREAD: Testing byte obj source, byte obj return---
+	 Started: 1586001875.01132 | Ended: 1586001889.6832998. ELAPSED: 14.671979665756226 (3.6679949164390564 per page)
+	 Levenshtein Distance (~Accuracy): 98.52915426370163
 
----Testing byte obj source, byte obj return, and page=2---
-	 Started: 1585415019.91983 | Ended: 1585415028.2444098. ELAPSED: 8.32457971572876 (2.08114492893219 per page)
-	 Levenshtein Distance (~Accuracy): 93.8561215370867
+7) ---MULTIPROCESS: Testing string source, byte obj return---
+	 Started: 1586001890.639108 | Ended: 1586001921.2343156. ELAPSED: 30.595207691192627 (7.648801922798157 per page)
+	 Levenshtein Distance (~Accuracy): 98.85564914318908
 
----Testing string source, byte obj return, and page=2---
-	 Started: 1585415028.3259118 | Ended: 1585415047.5272217. ELAPSED: 19.2013099193573 (4.800327479839325 per page)
-	 Levenshtein Distance (~Accuracy): 94.15295686971987
+8) ---MULTIPROCESS: Testing string source, string target---
+	 Started: 1586001922.1931727 | Ended: 1586001951.4981914. ELAPSED: 29.305018663406372 (7.326254665851593 per page)
+	 Levenshtein Distance (~Accuracy): 98.85564914318908
 
----Testing string source, string target, and page=2---
-	 Started: 1585415047.618996 | Ended: 1585415064.8674102. ELAPSED: 17.248414278030396 (4.312103569507599 per page)
-	 Levenshtein Distance (~Accuracy): 94.15295686971987
+9) ---MULTIPROCESSED: Testing byte obj source, byte obj return---
+	 Started: 1586001952.4515986 | Ended: 1586001966.8657768. ELAPSED: 14.414178133010864 (3.603544533252716 per page)
+	 Levenshtein Distance (~Accuracy): 98.52915426370163
 
+10) ---Testing byte obj source, byte obj return, and page=2---
+	 Started: 1586001967.7587879 | Ended: 1586001981.5674784. ELAPSED: 13.808690547943115 (3.452172636985779 per page)
+	 Levenshtein Distance (~Accuracy): 93.87709497206704
+
+11) ---Testing string source, byte obj return, and page=2---
+	 Started: 1586001981.670495 | Ended: 1586002009.268388. ELAPSED: 27.597892999649048 (6.899473249912262 per page)
+	 Levenshtein Distance (~Accuracy): 94.17389370691572
+
+12) ---Testing string source, string target, and page=2---
+	 Started: 1586002009.3777695 | Ended: 1586002037.0028753. ELAPSED: 27.62510585784912 (6.90627646446228 per page)
+	 Levenshtein Distance (~Accuracy): 94.17389370691572

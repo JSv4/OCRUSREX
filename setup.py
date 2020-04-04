@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="OCRUSREX",
-    version="0.2.1",
+    version="0.2.2",
     author="John Scrudato",
     author_email="john@thelegal.engineer",
     description="OCRUSREX takes a PDF (either by path or as a file-like object) and makes it searchable using Tesseract 4. It has an enterprise-friendly license.",

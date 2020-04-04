@@ -61,10 +61,12 @@ or false to indicate failure. If you don't specify a targetPath, returns a bytes
 
 ###### Multi Threaded
 
-OCRUSREX supports multithreaded execution via the uqfoundation/multiprocess library. Based on intial testing, this 
-execution mode enables you to divided OCR time per page vs singlethreaded by the number of processes you specify.
-For example, assuming you have the requisite # of cores, running processes=4 will divide ocr time per page by 4, effectively
-reducing OCR time by 75%. 
+OCRUSREX supports multithreaded execution via the core Python 3 multithreading library. Based on intial testing, this 
+execution mode enables you to divide OCR time per page vs singlethreaded by the number of threads you specify.
+For example, assuming you have the requisite # of cores, running threads=4 will divide ocr time per page by 4, effectively
+reducing OCR time by 75%. Multithreading performance is almost identical to running seperate processes. This is likely due
+to OCRUSREX always calling separate instances of tesseract, so it's effectively callings separate processes whether you choose
+multithreaded or multiprocessed execution.
 
     from OCRUSREX import ocrusrex
     ocrusrex.Multithreaded_OCRPDF(source="", targetPath=None, processes=4, nice=5, verbose=False, tesseract_config='--oem 1 -l eng -c preserve_interword_spaces=1 textonly_pdf=1')
@@ -72,10 +74,27 @@ reducing OCR time by 75%.
 _RETURNS_: fasly if the task fails or truthy if it succeeds. If you specify a targetPath, returns True to indicate success
 or false to indicate failure. If you don't specify a targetPath, returns a bytes obj on success or None on failure. 
 
+###### Multi Processed
+
+OCRUSREX supports multiprocessed execution via the uqfoundation/multiprocess library. Based on intial testing, this 
+execution mode enables you to divide OCR time per page vs singlethreaded by the number of processes you specify.
+For example, assuming you have the requisite # of cores, running processes=4 will divide ocr time per page by 4, effectively
+reducing OCR time by 75%. This method may be removed in the future as it appears to offer no real performance advantages
+over using multithreading, yet it comes at the expense of an additional dependency.
+
+    from OCRUSREX import ocrusrex
+    ocrusrex.Multiprocessed_OCRPDF(source="", targetPath=None, threads=4, nice=5, verbose=False, tesseract_config='--oem 1 -l eng -c preserve_interword_spaces=1 textonly_pdf=1')
+
+_RETURNS_: fasly if the task fails or truthy if it succeeds. If you specify a targetPath, returns True to indicate success
+or false to indicate failure. If you don't specify a targetPath, returns a bytes obj on success or None on failure. 
+
 ##### OPTIONS:
 
-* **processes** = 4 [**_Multithreaded Only_**]
+* **processes** = 4 [**_Multiprocessed Only_**]
   * How many processes should be spawned at one time? Default is 4. Initial guidance is this should not be > your # of effective cores. 
+
+* **threads** = 4 [**_Multithreaded Only_**]
+  * How many threads should be used at once. Default is 4. Because the threads spawn new tesseract instances, the multithreaded performance is quite similiar to multiprocessed.
 
 * **source** = ""
   * What is the target PDF to be OCRed? This can be a String containing a valid path to a pdf or a file-like
@@ -104,6 +123,10 @@ object.
 * **tesseract_config** = 'print'
    * Pass a method in for this argument to have verbose OCR message passed to this function as the first argument. 
    If you leave it as None, standard print() function is used.
+
+* **logger** = None
+   * If you want to pass a specific logger in to expose inner verbose messages (particularly for multithreaded and multiprocessed versions),
+   Pass the logger object in here. It must support .info and .error calls. If you leave this as None, verbose uses standard Python print() function.
 
 ### FUTURE
 
